@@ -1,6 +1,6 @@
 {
   "name": "kit-ecommerce-node",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Kit de utilidades para e-commerce no terminal (QR Code, senha e Pix) feito com Node.js: desafio de projeto da Formação Node.js da DIO.",
   "type": "module",
   "main": "src/index.js",
