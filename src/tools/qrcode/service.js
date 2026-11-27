@@ -34,13 +34,18 @@ export function toTerminal(text, { small = false } = {}) {
   return QRCode.toString(text, { type: 'terminal', small, errorCorrectionLevel: 'M' });
 }
 
-/** Nome de arquivo legível: "loja-exemplo-com-br-20261127-153000.png". */
-export function buildFileName(text, format, now = new Date()) {
-  let base;
-  try {
-    base = new URL(text).hostname;
-  } catch {
-    base = 'qrcode';
+/**
+ * Nome de arquivo legível: "loja-exemplo-com-br-20261127-153000.png".
+ * Usa o domínio do link, ou o `name` informado (ex.: QR Codes de Pix).
+ */
+export function buildFileName(text, format, now = new Date(), name) {
+  let base = name;
+  if (!base) {
+    try {
+      base = new URL(text).hostname;
+    } catch {
+      base = 'qrcode';
+    }
   }
   const slug = base.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'qrcode';
   const stamp = now.toISOString().replace(/[-:]/g, '').replace('T', '-').slice(0, 15);
@@ -50,13 +55,13 @@ export function buildFileName(text, format, now = new Date()) {
 /**
  * Salva o QR Code como imagem.
  * @param {string} text conteúdo do QR Code
- * @param {{ dir: string, format?: 'png' | 'svg' }} options
+ * @param {{ dir: string, format?: 'png' | 'svg', name?: string }} options
  * @returns {Promise<string>} caminho absoluto do arquivo criado
  */
-export async function saveToFile(text, { dir, format = 'png' }) {
+export async function saveToFile(text, { dir, format = 'png', name }) {
   if (!['png', 'svg'].includes(format)) throw new Error(`Formato não suportado: ${format}`);
   await mkdir(dir, { recursive: true });
-  const file = resolve(join(dir, buildFileName(text, format)));
+  const file = resolve(join(dir, buildFileName(text, format, new Date(), name)));
   await QRCode.toFile(file, text, { type: format, errorCorrectionLevel: 'M', margin: 2, width: 512 });
   return file;
 }

@@ -6,5 +6,6 @@
  */
 import qrcode from './qrcode/index.js';
 import password from './password/index.js';
+import pix from './pix/index.js';
 
-export const TOOLS = Object.freeze([qrcode, password]);
+export const TOOLS = Object.freeze([qrcode, password, pix]);
